@@ -5,6 +5,7 @@ import { Contact } from '@/types/contacts/contact';
 import { fetchContacts } from '@/services/contacts/fetchContacts';
 import { deleteContact } from '@/services/contacts/deleteContact';
 import { useContactFavorites } from '@/hooks/contacts/useContactFavorites';
+import Toast from '@/components/common/Toast';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -21,6 +22,14 @@ export default function Home() {
   const [showFavoritesOnly, setShowFavoritesOnly] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [favorites, toggleFavorite] = useContactFavorites();
+  const [toast, setToast] = useState<{
+    message: string;
+    variant: 'success' | 'error';
+  } | null>(null);
+
+  const hideToast = () => {
+    setToast(null);
+  };
 
   useEffect(() => {
     const loadContacts = async () => {
@@ -28,9 +37,8 @@ export default function Home() {
       try {
         const contacts = await fetchContacts();
         setContacts(contacts);
-        // TODO show successful toast
       } catch (error) {
-        // TODO show toast error
+        setToast({ message: 'Error loading contact list', variant: 'success' });
         console.error(error);
       } finally {
         setLoading(false);
@@ -46,9 +54,15 @@ export default function Home() {
       setContacts((prevContacts) =>
         prevContacts.filter((contact) => contact.id !== id),
       );
-      // TODO show successful toast
+      setToast({
+        message: 'The contact has been successfully deleted',
+        variant: 'success',
+      });
     } catch (error) {
-      // TODO show toast error
+      setToast({
+        message: 'Failed to delete the contact',
+        variant: 'error',
+      });
       console.error(error);
     }
   };
@@ -67,6 +81,14 @@ export default function Home() {
       </Head>
       <div className={`${geistSans.variable} ${geistMono.variable}`}>
         <main>
+          {toast && (
+            <Toast
+              message={toast.message}
+              variant={toast.variant}
+              onClose={hideToast}
+            />
+          )}
+
           <h1>Contact List</h1>
 
           <div>
