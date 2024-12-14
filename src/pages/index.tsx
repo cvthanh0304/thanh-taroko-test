@@ -6,6 +6,7 @@ import { fetchContacts } from '@/services/contacts/fetchContacts';
 import { deleteContact } from '@/services/contacts/deleteContact';
 import { useContactFavorites } from '@/hooks/contacts/useContactFavorites';
 import Toast from '@/components/common/Toast';
+import ConfirmDeleteContactModal from '@/components/contacts/ConfirmDeleteContractModal';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -22,6 +23,10 @@ export default function Home() {
   const [showFavoritesOnly, setShowFavoritesOnly] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [favorites, toggleFavorite] = useContactFavorites();
+  const [confirmDeleteModalOpen, setConfirmDeleteModalOpen] =
+    useState<boolean>(false);
+  const [contactToDelete, setContactToDelete] = useState<Contact | null>(null);
+
   const [toast, setToast] = useState<{
     message: string;
     variant: 'success' | 'error';
@@ -48,11 +53,13 @@ export default function Home() {
     loadContacts();
   }, []);
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async () => {
+    if (!contactToDelete) return;
+
     try {
-      await deleteContact(id);
+      await deleteContact(contactToDelete.id);
       setContacts((prevContacts) =>
-        prevContacts.filter((contact) => contact.id !== id),
+        prevContacts.filter((contact) => contact.id !== contactToDelete.id),
       );
       setToast({
         message: 'The contact has been successfully deleted',
@@ -64,12 +71,25 @@ export default function Home() {
         variant: 'error',
       });
       console.error(error);
+    } finally {
+      setConfirmDeleteModalOpen(false);
+      setContactToDelete(null);
     }
   };
 
   const displayedContacts = showFavoritesOnly
     ? contacts.filter((contact) => favorites.includes(contact.id))
     : contacts;
+
+  const openConfirmDeleteModal = (contact: Contact) => {
+    setContactToDelete(contact);
+    setConfirmDeleteModalOpen(true);
+  };
+
+  const closeConfirmDeleteModal = () => {
+    setContactToDelete(null);
+    setConfirmDeleteModalOpen(false);
+  };
 
   return (
     <>
@@ -125,7 +145,7 @@ export default function Home() {
                   <p>
                     <strong>Description:</strong> {contact.description}
                   </p>
-                  <button onClick={() => handleDelete(contact.id)}>
+                  <button onClick={() => openConfirmDeleteModal(contact)}>
                     Delete
                   </button>
                 </li>
@@ -136,6 +156,15 @@ export default function Home() {
           )}
         </main>
       </div>
+
+      {contactToDelete && (
+        <ConfirmDeleteContactModal
+          isOpen={confirmDeleteModalOpen}
+          onClose={closeConfirmDeleteModal}
+          onConfirm={handleDelete}
+          contactName={`${contactToDelete.firstName} ${contactToDelete.lastName}`}
+        />
+      )}
     </>
   );
 }
