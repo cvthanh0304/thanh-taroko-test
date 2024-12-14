@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Contact } from '@/types/contacts/contact';
 import { fetchContacts } from '@/services/contacts/fetchContacts';
 import { deleteContact } from '@/services/contacts/deleteContact';
+import { useContactFavorites } from '@/hooks/contacts/useContactFavorites';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -17,9 +18,9 @@ const geistMono = Geist_Mono({
 
 export default function Home() {
   const [contacts, setContacts] = useState<Contact[]>([]);
-  const [favorites, setFavorites] = useState<number[]>([]);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const [favorites, toggleFavorite] = useContactFavorites();
 
   useEffect(() => {
     const loadContacts = async () => {
@@ -38,14 +39,6 @@ export default function Home() {
 
     loadContacts();
   }, []);
-
-  const toggleFavorite = (id: number) => {
-    setFavorites((prevFavorites) =>
-      prevFavorites.includes(id)
-        ? prevFavorites.filter((favId) => favId !== id)
-        : [...prevFavorites, id],
-    );
-  };
 
   const handleDelete = async (id: number) => {
     try {
