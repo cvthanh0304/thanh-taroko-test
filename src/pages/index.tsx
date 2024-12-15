@@ -11,6 +11,8 @@ import CreateContactModal from '@/components/contacts/CreateContactModal';
 import { createContact } from '@/services/contacts/createContact';
 import UpdateContactModal from '@/components/contacts/UpdateContactModal';
 import { updateContact } from '@/services/contacts/updateContact';
+import { sortContacts } from '@/utils/contacts/sortContacts';
+import { Dropdown } from '@/components/common/Dropdown';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -21,6 +23,13 @@ const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
 });
+
+const sortOptions = [
+  { value: 'firstNameAsc', label: 'First Name ASC' },
+  { value: 'firstNameDesc', label: 'First Name DESC' },
+  { value: 'lastNameAsc', label: 'Last Name ASC' },
+  { value: 'lastNameDesc', label: 'Last Name DESC' },
+];
 
 export default function ContactsPage() {
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -33,6 +42,11 @@ export default function ContactsPage() {
   const [updateModalOpen, setUpdateModalOpen] = useState<boolean>(false);
   const [contactToDelete, setContactToDelete] = useState<Contact | null>(null);
   const [contactToUpdate, setContactToUpdate] = useState<Contact | null>(null);
+  const [selectedSort, setSelectedSort] = useState<{
+    value: string;
+    label: string;
+  } | null>(null);
+
   const [toast, setToast] = useState<{
     message: string;
     variant: 'success' | 'error';
@@ -148,6 +162,13 @@ export default function ContactsPage() {
     setUpdateModalOpen(true);
   };
 
+  const sortedContacts = sortContacts(
+    showFavoritesOnly
+      ? contacts.filter((contact) => favorites.includes(contact.id))
+      : contacts,
+    selectedSort ? selectedSort.value : null,
+  );
+
   return (
     <>
       <Head>
@@ -173,6 +194,15 @@ export default function ContactsPage() {
           </button>
 
           <div>
+            <Dropdown
+              options={sortOptions}
+              selected={selectedSort}
+              onSelectedChange={setSelectedSort}
+              label="Sort By"
+            />
+          </div>
+
+          <div>
             <input
               id="favorites-checkbox"
               type="checkbox"
@@ -184,9 +214,9 @@ export default function ContactsPage() {
 
           {loading ? (
             <p>Loading...</p>
-          ) : displayedContacts.length > 0 ? (
+          ) : sortedContacts.length > 0 ? (
             <ul>
-              {displayedContacts.map((contact: Contact) => (
+              {sortedContacts.map((contact: Contact) => (
                 <li key={contact.id}>
                   <h2>
                     {contact.firstName} {contact.lastName}
