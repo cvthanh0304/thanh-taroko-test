@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import ReactDOM from 'react-dom';
+import { Button } from '@/components/common/Button';
 import styles from './ConfirmModal.module.css';
 
 export const MODAL_ROOT_ID = 'modal-root';
@@ -32,20 +33,12 @@ const ConfirmModal = ({
       <div className={styles['modal-content']}>
         <div className={styles['modal-body']}>{children}</div>
         <div className={styles['modal-actions']}>
-          <button
-            className={styles['modal-button']}
-            onClick={onConfirm}
-            disabled={loading}
-          >
+          <Button variant="primary" onClick={onConfirm} disabled={loading}>
             {loading ? 'Loading...' : 'Confirm'}
-          </button>
-          <button
-            className={styles['modal-button']}
-            onClick={onClose}
-            disabled={loading}
-          >
+          </Button>
+          <Button variant="secondary" onClick={onClose} disabled={loading}>
             Cancel
-          </button>
+          </Button>
         </div>
       </div>
     </div>,

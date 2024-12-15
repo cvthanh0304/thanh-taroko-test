@@ -15,6 +15,10 @@ import { sortContacts } from '@/utils/contacts/sortContacts';
 import { Dropdown } from '@/components/common/Dropdown';
 import { isEditDistanceOne } from '@/utils/common/isEditDistanceONe';
 
+import styles from '@/styles/ContactsPage.module.css';
+import { ContactCard } from '@/components/contacts/ContactCard';
+import { Button } from '@/components/common/Button';
+
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
@@ -191,88 +195,72 @@ export default function ContactsPage() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className={`${geistSans.variable} ${geistMono.variable}`}>
-        <main>
-          {toast && (
-            <Toast
-              message={toast.message}
-              variant={toast.variant}
-              onClose={hideToast}
-            />
-          )}
+      <main className={`${geistSans.variable} ${geistMono.variable}`}>
+        {toast && (
+          <Toast
+            message={toast.message}
+            variant={toast.variant}
+            onClose={hideToast}
+          />
+        )}
+        <div className={styles['page-container']}>
+          <h1 className={styles['page-header']}>Contact List</h1>
 
-          <h1>Contact List</h1>
+          <div className={styles['actions']}>
+            <Button variant="primary" onClick={() => setCreateModalOpen(true)}>
+              Add New Contact
+            </Button>
 
-          <button onClick={() => setCreateModalOpen(true)}>
-            Add New Contact
-          </button>
-
-          <div>
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search by name..."
+              className={styles['search-input']}
             />
-          </div>
 
-          <div>
-            <Dropdown
-              options={sortOptions}
-              selected={selectedSort}
-              onSelectedChange={setSelectedSort}
-              label="Sort By"
-            />
-          </div>
+            <div className={styles['dropdown-container']}>
+              <Dropdown
+                options={sortOptions}
+                selected={selectedSort}
+                onSelectedChange={setSelectedSort}
+                placeholder="Sort by"
+              />
+            </div>
 
-          <div>
-            <input
-              id="favorites-checkbox"
-              type="checkbox"
-              checked={showFavoritesOnly}
-              onChange={() => setShowFavoritesOnly((prev: boolean) => !prev)}
-            />
-            <label htmlFor="favorites-checkbox">Show Favorites Only</label>
+            <div className={styles['favorites-container']}>
+              <input
+                id="favorites-checkbox"
+                type="checkbox"
+                checked={showFavoritesOnly}
+                onChange={() => setShowFavoritesOnly((prev: boolean) => !prev)}
+              />
+              <label htmlFor="favorites-checkbox">Show Favorites Only</label>
+            </div>
           </div>
 
           {loading ? (
-            <p>Loading...</p>
+            <p className={styles['loading-text']}>Loading...</p>
           ) : sortedContacts.length > 0 ? (
-            <ul>
-              {sortedContacts.map((contact: Contact) => (
-                <li key={contact.id}>
-                  <h2>
-                    {contact.firstName} {contact.lastName}
-                    <span
-                      onClick={() => toggleFavorite(contact.id)}
-                      style={{
-                        cursor: 'pointer',
-                        color: favorites.includes(contact.id) ? 'gold' : 'gray',
-                      }}
-                    >
-                      ★
-                    </span>
-                  </h2>
-                  <p>
-                    <strong>Job:</strong> {contact.job}
-                  </p>
-                  <p>
-                    <strong>Description:</strong> {contact.description}
-                  </p>
-                  <button onClick={() => openConfirmDeleteModal(contact)}>
-                    Delete
-                  </button>
-                  <button onClick={() => openUpdateModal(contact)}>
-                    Update
-                  </button>
-                </li>
+            <ul className={styles['contact-list']}>
+              {sortedContacts.map((contact) => (
+                <ContactCard
+                  key={contact.id}
+                  contact={contact}
+                  isFavorite={favorites.includes(contact.id)}
+                  onToggleFavorite={toggleFavorite}
+                  onDelete={openConfirmDeleteModal}
+                  onUpdate={openUpdateModal}
+                />
               ))}
             </ul>
           ) : (
-            <p>No {showFavoritesOnly ? 'favorite' : ''} contacts available.</p>
+            <p className={styles['loading-text']}>
+              No {showFavoritesOnly ? 'favorite' : ''} contacts available.
+            </p>
           )}
-        </main>
-      </div>
+        </div>
+      </main>
 
       {contactToDelete && confirmDeleteModalOpen && (
         <ConfirmDeleteContactModal

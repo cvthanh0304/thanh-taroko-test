@@ -1,3 +1,5 @@
+import { Contact, ContactApiResponse } from '@/types/contacts/contact';
+
 export const mapContact = (data: ContactApiResponse): Contact => ({
   id: data.id,
   firstName: data.first_name,

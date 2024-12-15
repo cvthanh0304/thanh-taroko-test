@@ -10,7 +10,8 @@ type DropdownProps = {
   options: Option[];
   selected: Option | null;
   onSelectedChange: (option: Option) => void;
-  label: string;
+  label?: string;
+  placeholder?: string;
 };
 
 export const Dropdown = ({
@@ -18,6 +19,7 @@ export const Dropdown = ({
   selected,
   onSelectedChange,
   label,
+  placeholder,
 }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -38,12 +40,12 @@ export const Dropdown = ({
 
   return (
     <div className={styles['dropdown']} ref={dropdownRef}>
-      <label>{label}</label>
+      {label && <label className={styles['dropdown-label']}>{label}</label>}
       <div
         className={`${styles['dropdown-selected']} ${isOpen ? styles['open'] : ''}`}
         onClick={() => setIsOpen((prev) => !prev)}
       >
-        {selected ? selected.label : 'Select...'}
+        {selected ? selected.label : placeholder || 'Select...'}
       </div>
       {isOpen && (
         <div className={styles['dropdown-menu']}>
