@@ -8,7 +8,7 @@ type CreateContactModalProps = {
   onCreate: (newContact: Omit<Contact, 'id'>) => Promise<void>;
 };
 
-const CreateContactModal = ({
+export const CreateContactModal = ({
   isOpen,
   onClose,
   onCreate,
@@ -104,5 +104,3 @@ const CreateContactModal = ({
     </ConfirmModal>
   );
 };
-
-export default CreateContactModal;

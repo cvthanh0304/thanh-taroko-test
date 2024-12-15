@@ -6,18 +6,18 @@ import { fetchContacts } from '@/services/contacts/fetchContacts';
 import { deleteContact } from '@/services/contacts/deleteContact';
 import { useContactFavorites } from '@/hooks/contacts/useContactFavorites';
 import Toast from '@/components/common/Toast';
-import ConfirmDeleteContactModal from '@/components/contacts/ConfirmDeleteContractModal';
-import CreateContactModal from '@/components/contacts/CreateContactModal';
+import { ConfirmDeleteContactModal } from '@/components/contacts/ConfirmDeleteContactModal';
+import { CreateContactModal } from '@/components/contacts/CreateContactModal';
 import { createContact } from '@/services/contacts/createContact';
-import UpdateContactModal from '@/components/contacts/UpdateContactModal';
+import { UpdateContactModal } from '@/components/contacts/UpdateContactModal';
 import { updateContact } from '@/services/contacts/updateContact';
 import { sortContacts } from '@/utils/contacts/sortContacts';
 import { Dropdown } from '@/components/common/Dropdown';
-import { isEditDistanceOne } from '@/utils/common/isEditDistanceONe';
 
 import styles from '@/styles/ContactsPage.module.css';
 import { ContactCard } from '@/components/contacts/ContactCard';
 import { Button } from '@/components/common/Button';
+import { isEditDistanceOne } from '@/utils/common/isEditDistanceOne';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',

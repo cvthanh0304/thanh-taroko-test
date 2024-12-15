@@ -8,7 +8,7 @@ type ConfirmDeleteContactModalProps = {
   contactName: string;
 };
 
-const ConfirmDeleteContactModal = ({
+export const ConfirmDeleteContactModal = ({
   isOpen,
   onClose,
   onConfirm,
@@ -24,5 +24,3 @@ const ConfirmDeleteContactModal = ({
     </ConfirmModal>
   );
 };
-
-export default ConfirmDeleteContactModal;

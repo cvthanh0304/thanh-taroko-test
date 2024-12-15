@@ -48,7 +48,7 @@ export const Dropdown = ({
         {selected ? selected.label : placeholder || 'Select...'}
       </div>
       {isOpen && (
-        <div className={styles['dropdown-menu']}>
+        <div className={styles['dropdown-menu']} role="list">
           {options.map((option) => (
             <div
               key={option.value}

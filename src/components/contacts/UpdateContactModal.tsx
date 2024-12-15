@@ -9,7 +9,7 @@ type UpdateContactModalProps = {
   contact: Contact;
 };
 
-const UpdateContactModal = ({
+export const UpdateContactModal = ({
   isOpen,
   onClose,
   onUpdate,
@@ -103,5 +103,3 @@ const UpdateContactModal = ({
     </ConfirmModal>
   );
 };
-
-export default UpdateContactModal;
