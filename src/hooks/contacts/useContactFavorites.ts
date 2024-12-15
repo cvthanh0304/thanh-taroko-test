@@ -1,8 +1,13 @@
 import { useEffect, useState } from 'react';
 
-const FAVORITE_CONTACTS_KEY = 'favorite_contacts';
+export const FAVORITE_CONTACTS_KEY = 'favorite_contacts';
 
-export const useContactFavorites = (): [number[], (id: number) => void] => {
+type UseContactFavoritesReturn = {
+  favorites: number[];
+  toggleFavorite: (id: number) => void;
+};
+
+export const useContactFavorites = (): UseContactFavoritesReturn => {
   const [favorites, setFavorites] = useState<number[]>([]);
 
   useEffect(() => {
@@ -24,5 +29,8 @@ export const useContactFavorites = (): [number[], (id: number) => void] => {
     );
   };
 
-  return [favorites, toggleFavorite];
+  return {
+    favorites,
+    toggleFavorite,
+  };
 };

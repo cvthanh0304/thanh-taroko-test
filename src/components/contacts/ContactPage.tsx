@@ -28,7 +28,7 @@ const sortOptions = [
   { value: 'lastNameDesc', label: 'Last Name DESC' },
 ];
 
-export default function ContactsPage() {
+export const ContactsPage = () => {
   const {
     contacts: sortedContacts,
     loading,
@@ -159,4 +159,4 @@ export default function ContactsPage() {
       )}
     </>
   );
-}
+};
