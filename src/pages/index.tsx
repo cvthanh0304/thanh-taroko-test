@@ -13,6 +13,7 @@ import UpdateContactModal from '@/components/contacts/UpdateContactModal';
 import { updateContact } from '@/services/contacts/updateContact';
 import { sortContacts } from '@/utils/contacts/sortContacts';
 import { Dropdown } from '@/components/common/Dropdown';
+import { isEditDistanceOne } from '@/utils/common/isEditDistanceONe';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -46,6 +47,7 @@ export default function ContactsPage() {
     value: string;
     label: string;
   } | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
   const [toast, setToast] = useState<{
     message: string;
@@ -143,10 +145,6 @@ export default function ContactsPage() {
     }
   };
 
-  const displayedContacts = showFavoritesOnly
-    ? contacts.filter((contact) => favorites.includes(contact.id))
-    : contacts;
-
   const openConfirmDeleteModal = (contact: Contact) => {
     setContactToDelete(contact);
     setConfirmDeleteModalOpen(true);
@@ -162,10 +160,26 @@ export default function ContactsPage() {
     setUpdateModalOpen(true);
   };
 
+  const filteredContacts = contacts.filter((contact) => {
+    const firstName = contact.firstName.toLowerCase();
+    const lastName = contact.lastName.toLowerCase();
+    const fullName = `${firstName} ${lastName}`;
+    const term = searchTerm.toLowerCase();
+
+    const matchesSearch =
+      !term ||
+      fullName.includes(term) ||
+      isEditDistanceOne(firstName, term) ||
+      isEditDistanceOne(lastName, term);
+
+    const matchesFavorite =
+      !showFavoritesOnly || favorites.includes(contact.id);
+
+    return matchesSearch && matchesFavorite;
+  });
+
   const sortedContacts = sortContacts(
-    showFavoritesOnly
-      ? contacts.filter((contact) => favorites.includes(contact.id))
-      : contacts,
+    filteredContacts,
     selectedSort ? selectedSort.value : null,
   );
 
@@ -192,6 +206,15 @@ export default function ContactsPage() {
           <button onClick={() => setCreateModalOpen(true)}>
             Add New Contact
           </button>
+
+          <div>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search by name..."
+            />
+          </div>
 
           <div>
             <Dropdown
