@@ -7,6 +7,8 @@ import { deleteContact } from '@/services/contacts/deleteContact';
 import { useContactFavorites } from '@/hooks/contacts/useContactFavorites';
 import Toast from '@/components/common/Toast';
 import ConfirmDeleteContactModal from '@/components/contacts/ConfirmDeleteContractModal';
+import CreateContactModal from '@/components/contacts/CreateContactModal';
+import { createContact } from '@/services/contacts/createContact';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -25,6 +27,8 @@ export default function Home() {
   const [favorites, toggleFavorite] = useContactFavorites();
   const [confirmDeleteModalOpen, setConfirmDeleteModalOpen] =
     useState<boolean>(false);
+  const [createModalOpen, setCreateModalOpen] = useState<boolean>(false);
+
   const [contactToDelete, setContactToDelete] = useState<Contact | null>(null);
 
   const [toast, setToast] = useState<{
@@ -61,6 +65,9 @@ export default function Home() {
       setContacts((prevContacts) =>
         prevContacts.filter((contact) => contact.id !== contactToDelete.id),
       );
+      if (favorites.includes(contactToDelete.id)) {
+        toggleFavorite(contactToDelete.id);
+      }
       setToast({
         message: 'The contact has been successfully deleted',
         variant: 'success',
@@ -74,6 +81,25 @@ export default function Home() {
     } finally {
       setConfirmDeleteModalOpen(false);
       setContactToDelete(null);
+    }
+  };
+
+  const handleCreateContact = async (newContact: Omit<Contact, 'id'>) => {
+    try {
+      const createdContact = await createContact(newContact);
+      setContacts((prev) => [...prev, createdContact]);
+      setToast({
+        message: 'The contact has been successfully created',
+        variant: 'success',
+      });
+    } catch (error) {
+      setToast({
+        message: 'Failed to create the contact',
+        variant: 'error',
+      });
+      console.error('Failed to create contact:', error);
+    } finally {
+      setCreateModalOpen(false);
     }
   };
 
@@ -110,6 +136,10 @@ export default function Home() {
           )}
 
           <h1>Contact List</h1>
+
+          <button onClick={() => setCreateModalOpen(true)}>
+            Add New Contact
+          </button>
 
           <div>
             <input
@@ -157,12 +187,20 @@ export default function Home() {
         </main>
       </div>
 
-      {contactToDelete && (
+      {contactToDelete && confirmDeleteModalOpen && (
         <ConfirmDeleteContactModal
           isOpen={confirmDeleteModalOpen}
           onClose={closeConfirmDeleteModal}
           onConfirm={handleDelete}
           contactName={`${contactToDelete.firstName} ${contactToDelete.lastName}`}
+        />
+      )}
+
+      {createModalOpen && (
+        <CreateContactModal
+          isOpen={createModalOpen}
+          onClose={() => setCreateModalOpen(false)}
+          onCreate={handleCreateContact}
         />
       )}
     </>

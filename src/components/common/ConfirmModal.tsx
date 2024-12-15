@@ -9,6 +9,7 @@ type ConfirmModalProps = {
   onClose: () => void;
   onConfirm: () => void;
   children?: ReactNode;
+  loading?: boolean;
 };
 
 const ConfirmModal = ({
@@ -16,6 +17,7 @@ const ConfirmModal = ({
   onClose,
   onConfirm,
   children,
+  loading = false,
 }: ConfirmModalProps) => {
   if (!isOpen) return null;
 
@@ -30,10 +32,18 @@ const ConfirmModal = ({
       <div className={styles['modal-content']}>
         <div className={styles['modal-body']}>{children}</div>
         <div className={styles['modal-actions']}>
-          <button className={styles['modal-button']} onClick={onConfirm}>
-            Confirm
+          <button
+            className={styles['modal-button']}
+            onClick={onConfirm}
+            disabled={loading}
+          >
+            {loading ? 'Loading...' : 'Confirm'}
           </button>
-          <button className={styles['modal-button']} onClick={onClose}>
+          <button
+            className={styles['modal-button']}
+            onClick={onClose}
+            disabled={loading}
+          >
             Cancel
           </button>
         </div>
