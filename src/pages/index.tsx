@@ -9,6 +9,8 @@ import Toast from '@/components/common/Toast';
 import ConfirmDeleteContactModal from '@/components/contacts/ConfirmDeleteContractModal';
 import CreateContactModal from '@/components/contacts/CreateContactModal';
 import { createContact } from '@/services/contacts/createContact';
+import UpdateContactModal from '@/components/contacts/UpdateContactModal';
+import { updateContact } from '@/services/contacts/updateContact';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -20,7 +22,7 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
-export default function Home() {
+export default function ContactsPage() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
@@ -28,9 +30,9 @@ export default function Home() {
   const [confirmDeleteModalOpen, setConfirmDeleteModalOpen] =
     useState<boolean>(false);
   const [createModalOpen, setCreateModalOpen] = useState<boolean>(false);
-
+  const [updateModalOpen, setUpdateModalOpen] = useState<boolean>(false);
   const [contactToDelete, setContactToDelete] = useState<Contact | null>(null);
-
+  const [contactToUpdate, setContactToUpdate] = useState<Contact | null>(null);
   const [toast, setToast] = useState<{
     message: string;
     variant: 'success' | 'error';
@@ -103,6 +105,30 @@ export default function Home() {
     }
   };
 
+  const handleUpdateContact = async (updatedContact: Contact) => {
+    try {
+      const updatedData = await updateContact(updatedContact);
+      setContacts((prev) =>
+        prev.map((contact) =>
+          contact.id === updatedData.id ? updatedData : contact,
+        ),
+      );
+      setToast({
+        message: 'The contact has been successfully updated',
+        variant: 'success',
+      });
+    } catch (error) {
+      setToast({
+        message: 'Failed to update the contact',
+        variant: 'error',
+      });
+      console.error('Failed to update contact:', error);
+    } finally {
+      setUpdateModalOpen(false);
+      setContactToUpdate(null);
+    }
+  };
+
   const displayedContacts = showFavoritesOnly
     ? contacts.filter((contact) => favorites.includes(contact.id))
     : contacts;
@@ -115,6 +141,11 @@ export default function Home() {
   const closeConfirmDeleteModal = () => {
     setContactToDelete(null);
     setConfirmDeleteModalOpen(false);
+  };
+
+  const openUpdateModal = (contact: Contact) => {
+    setContactToUpdate(contact);
+    setUpdateModalOpen(true);
   };
 
   return (
@@ -178,6 +209,9 @@ export default function Home() {
                   <button onClick={() => openConfirmDeleteModal(contact)}>
                     Delete
                   </button>
+                  <button onClick={() => openUpdateModal(contact)}>
+                    Update
+                  </button>
                 </li>
               ))}
             </ul>
@@ -201,6 +235,15 @@ export default function Home() {
           isOpen={createModalOpen}
           onClose={() => setCreateModalOpen(false)}
           onCreate={handleCreateContact}
+        />
+      )}
+
+      {contactToUpdate && updateModalOpen && (
+        <UpdateContactModal
+          isOpen={updateModalOpen}
+          onClose={() => setUpdateModalOpen(false)}
+          onUpdate={handleUpdateContact}
+          contact={contactToUpdate}
         />
       )}
     </>
