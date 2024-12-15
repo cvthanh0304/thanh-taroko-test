@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ConfirmModal from '../common/ConfirmModal';
 import { Contact } from '@/types/contacts/contact';
+import styles from './UpdateContactModal.module.css';
 
 type UpdateContactModalProps = {
   isOpen: boolean;
@@ -52,11 +53,11 @@ export const UpdateContactModal = ({
       onConfirm={handleSubmit}
       loading={loading}
     >
-      <h2>
+      <h2 className={styles['modal-title']}>
         Update Contact: {contact.firstName} ${contact.lastName}
       </h2>
-      <form>
-        <div>
+      <form className={styles['modal-form']}>
+        <div className={styles['form-group']}>
           <label htmlFor="firstName">First Name</label>
           <input
             id="firstName"
@@ -67,7 +68,7 @@ export const UpdateContactModal = ({
             required
           />
         </div>
-        <div>
+        <div className={styles['form-group']}>
           <label htmlFor="lastName">Last Name</label>
           <input
             id="lastName"
@@ -78,7 +79,7 @@ export const UpdateContactModal = ({
             required
           />
         </div>
-        <div>
+        <div className={styles['form-group']}>
           <label htmlFor="job">Job</label>
           <input
             id="job"
@@ -89,7 +90,7 @@ export const UpdateContactModal = ({
             required
           />
         </div>
-        <div>
+        <div className={styles['form-group']}>
           <label htmlFor="description">Description</label>
           <textarea
             id="description"
