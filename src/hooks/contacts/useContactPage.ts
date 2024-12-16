@@ -6,8 +6,8 @@ import { updateContact } from '@/services/contacts/updateContact';
 import { deleteContact } from '@/services/contacts/deleteContact';
 import { useContactFavorites } from '@/hooks/contacts/useContactFavorites';
 import { sortContacts } from '@/utils/contacts/sortContacts';
-import { isEditDistanceOne } from '@/utils/common/isEditDistanceOne';
 import { useDebounce } from '../common/useDebounce';
+import { isEditDistanceOne } from '../../utils/common/isEditDistanceOne';
 
 type ToastType = {
   message: string;
