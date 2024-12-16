@@ -81,7 +81,7 @@ export const useContactPage = (): UseContactsReturn => {
         const contacts = await fetchContacts();
         setContacts(contacts);
       } catch (error) {
-        setToast({ message: 'Error loading contact list', variant: 'success' });
+        setToast({ message: 'Error loading contact list', variant: 'error' });
         console.error(error);
       } finally {
         setLoading(false);
