@@ -3,7 +3,7 @@
  * An edit can be an insertion, deletion, or replacement of a character.
  **/
 
-export const isEditDistanceOne = (a: string, b: string): boolean => {
+export const editDistanceOne = (a: string, b: string): boolean => {
   const lenA = a.length;
   const lenB = b.length;
 

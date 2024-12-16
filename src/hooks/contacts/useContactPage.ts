@@ -7,7 +7,7 @@ import { deleteContact } from '@/services/contacts/deleteContact';
 import { useContactFavorites } from '@/hooks/contacts/useContactFavorites';
 import { sortContacts } from '@/utils/contacts/sortContacts';
 import { useDebounce } from '../common/useDebounce';
-import { isEditDistanceOne } from '../../utils/common/isEditDistanceOne';
+import { editDistanceOne } from '@/utils/common/editDistanceOne';
 
 type ToastType = {
   message: string;
@@ -190,8 +190,8 @@ export const useContactPage = (): UseContactsReturn => {
     const matchesSearch =
       !term ||
       fullName.includes(term) ||
-      isEditDistanceOne(firstName, term) ||
-      isEditDistanceOne(lastName, term);
+      editDistanceOne(firstName, term) ||
+      editDistanceOne(lastName, term);
 
     const matchesFavorite =
       !showFavoritesOnly || favorites.includes(contact.id);
