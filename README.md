@@ -2,6 +2,22 @@
 
 This is a [Next.js](https://nextjs.org) project created with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
 
+## Tech Stack
+
+The project uses the following technologies:
+
+- **Framework**: [Next.js](https://nextjs.org)
+- **Language**: TypeScript
+- **Library**: React
+- **Styling**: CSS Modules (Next.js built-in support)
+- **Linting**:
+  - ESLint
+  - Prettier
+- **Testing**:
+  - Jest
+  - @testing-library/react
+  - @testing-library/jest-dom
+
 ## Getting Started
 
 To run the application locally, follow these steps:
