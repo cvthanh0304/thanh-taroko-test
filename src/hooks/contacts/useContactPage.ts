@@ -26,7 +26,7 @@ type UseContactsReturn = {
   handleCreateContact: (newContact: Omit<Contact, 'id'>) => Promise<void>;
   handleUpdateContact: (updatedContact: Contact) => Promise<void>;
   handleDeleteContact: () => Promise<void>;
-  toggleFavorite: (contactId: number) => void;
+  handleToggleFavorite: (contactId: number) => void;
   setSearchTerm: (term: string) => void;
   setSelectedSort: (option: SortOption) => void;
   setShowFavoritesOnly: React.Dispatch<React.SetStateAction<boolean>>;
@@ -204,6 +204,17 @@ export const useContactPage = (): UseContactsReturn => {
     selectedSort ? selectedSort.value : null,
   );
 
+  const handleToggleFavorite = (id: number) => {
+    const isFavorite = favorites.includes(id);
+    toggleFavorite(id);
+    setToast({
+      message: isFavorite
+        ? `Removed contact ${id} from favorites`
+        : `Added contact ${id} to favorites`,
+      variant: 'success',
+    });
+  };
+
   return {
     contacts: sortedContacts,
     loading,
@@ -211,7 +222,6 @@ export const useContactPage = (): UseContactsReturn => {
     handleCreateContact,
     handleUpdateContact,
     handleDeleteContact,
-    toggleFavorite,
     setSearchTerm,
     setSelectedSort,
     closeConfirmDeleteModal,
@@ -230,5 +240,6 @@ export const useContactPage = (): UseContactsReturn => {
     showFavoritesOnly,
     contactToDelete,
     favorites,
+    handleToggleFavorite,
   };
 };

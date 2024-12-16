@@ -36,7 +36,6 @@ export default function ContactsPage() {
     handleCreateContact,
     handleUpdateContact,
     handleDeleteContact,
-    toggleFavorite,
     setSearchTerm,
     setSelectedSort,
     closeConfirmDeleteModal,
@@ -55,6 +54,7 @@ export default function ContactsPage() {
     contactToDelete,
     closeUpdateModal,
     favorites,
+    handleToggleFavorite,
   } = useContactPage();
 
   return (
@@ -118,7 +118,7 @@ export default function ContactsPage() {
                   key={contact.id}
                   contact={contact}
                   isFavorite={favorites.includes(contact.id)}
-                  onToggleFavorite={toggleFavorite}
+                  onToggleFavorite={handleToggleFavorite}
                   onDelete={openConfirmDeleteModal}
                   onUpdate={openUpdateModal}
                 />
