@@ -49,3 +49,9 @@ To run the application locally, follow these steps:
 4. **Start the development server**
 
    Open your browser and go to http://localhost:3001 to view the app.
+
+## Presentation
+
+For more details about the project, check out the presentation:
+
+[Taroko Presentation](https://topaz-base-e3f.notion.site/Taroko-Presentation-15f911647e9380418b22f99122d2b779)
