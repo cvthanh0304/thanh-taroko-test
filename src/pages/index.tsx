@@ -10,6 +10,8 @@ import styles from '@/styles/ContactsPage.module.css';
 import { ContactCard } from '@/components/contacts/ContactCard';
 import { Button } from '@/components/common/Button';
 import { useContactPage } from '@/hooks/contacts/useContactPage';
+import { fetchContacts } from '@/services/contacts/fetchContacts';
+import { Contact } from '@/types/contacts/contact';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -28,10 +30,23 @@ const sortOptions = [
   { value: 'lastNameDesc', label: 'Last Name DESC' },
 ];
 
-export default function ContactsPage() {
+export async function getServerSideProps() {
+  try {
+    const contacts = await fetchContacts();
+    return { props: { contacts } };
+  } catch (error) {
+    console.error('Failed to fetch contacts:', error);
+    return { props: { contacts: [] } };
+  }
+}
+
+type ContactsPageProps = {
+  contacts: Contact[];
+};
+
+export default function ContactsPage({ contacts }: ContactsPageProps) {
   const {
     contacts: sortedContacts,
-    loading,
     toast,
     handleCreateContact,
     handleUpdateContact,
@@ -55,7 +70,7 @@ export default function ContactsPage() {
     closeUpdateModal,
     favorites,
     handleToggleFavorite,
-  } = useContactPage();
+  } = useContactPage(contacts);
 
   return (
     <>
@@ -109,9 +124,7 @@ export default function ContactsPage() {
             </div>
           </div>
 
-          {loading ? (
-            <p className={styles['loading-text']}>Loading...</p>
-          ) : sortedContacts.length > 0 ? (
+          {sortedContacts.length > 0 ? (
             <ul className={styles['contact-list']}>
               {sortedContacts.map((contact) => (
                 <ContactCard

@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Contact } from '@/types/contacts/contact';
-import { fetchContacts } from '@/services/contacts/fetchContacts';
 import { createContact } from '@/services/contacts/createContact';
 import { updateContact } from '@/services/contacts/updateContact';
 import { deleteContact } from '@/services/contacts/deleteContact';
@@ -21,7 +20,6 @@ type SortOption = {
 
 type UseContactsReturn = {
   contacts: Contact[];
-  loading: boolean;
   toast: ToastType;
   handleCreateContact: (newContact: Omit<Contact, 'id'>) => Promise<void>;
   handleUpdateContact: (updatedContact: Contact) => Promise<void>;
@@ -47,10 +45,11 @@ type UseContactsReturn = {
   favorites: number[];
 };
 
-export const useContactPage = (): UseContactsReturn => {
-  const [contacts, setContacts] = useState<Contact[]>([]);
+export const useContactPage = (
+  initialContacts: Contact[],
+): UseContactsReturn => {
+  const [contacts, setContacts] = useState<Contact[]>(initialContacts);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
   const { favorites, toggleFavorite } = useContactFavorites();
   const [confirmDeleteModalOpen, setConfirmDeleteModalOpen] =
     useState<boolean>(false);
@@ -73,23 +72,6 @@ export const useContactPage = (): UseContactsReturn => {
   const hideToast = () => {
     setToast(null);
   };
-
-  useEffect(() => {
-    const loadContacts = async () => {
-      setLoading(true);
-      try {
-        const contacts = await fetchContacts();
-        setContacts(contacts);
-      } catch (error) {
-        setToast({ message: 'Error loading contact list', variant: 'error' });
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadContacts();
-  }, []);
 
   const handleDeleteContact = async () => {
     if (!contactToDelete) return;
@@ -217,7 +199,6 @@ export const useContactPage = (): UseContactsReturn => {
 
   return {
     contacts: sortedContacts,
-    loading,
     toast,
     handleCreateContact,
     handleUpdateContact,
